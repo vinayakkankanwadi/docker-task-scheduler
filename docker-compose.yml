@@ -1,0 +1,20 @@
+services:
+  # Task: Hello World (scheduled via labels)
+  hello-world:
+    build: .
+    profiles: [manual]  # Prevents auto-start
+    labels:
+      cron.schedule: "* * * * *"  # Cron expression from crontab.guru
+
+  # Scheduler: Reads labels and triggers services
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.scheduler
+    container_name: scheduler
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app
+    environment:
+      - TZ=${TZ:-UTC}

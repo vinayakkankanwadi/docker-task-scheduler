@@ -1,0 +1,14 @@
+# Minimal scheduler using Python + Docker CLI
+FROM docker:24-cli
+
+# Install Python and docker-compose
+RUN apk add --no-cache python3 py3-pip docker-compose && \
+    pip3 install --no-cache-dir croniter pyyaml --break-system-packages
+
+WORKDIR /app
+
+# Copy configuration
+COPY docker-compose.yml scheduler.py ./
+
+# Run scheduler
+CMD ["python3", "-u", "scheduler.py"]
